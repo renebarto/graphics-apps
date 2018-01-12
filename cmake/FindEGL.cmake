@@ -1,4 +1,4 @@
-# - Try to Find EGL
+# - Try to Find libEGL
 # Once done, this will define
 #
 #  EGL_FOUND - system has EGL installed.
@@ -32,9 +32,19 @@
 
 find_package(PkgConfig)
 
-pkg_check_modules(PC_EGL EGL)
+pkg_check_modules(PC_EGL egl)
 
 if (PC_EGL_FOUND)
+    message(STATUS "Found egl.pc")
+    message(STATUS "PC_EGL_CFLAGS:           ${PC_EGL_CFLAGS}")
+    message(STATUS "PC_EGL_CFLAGS_OTHER:     ${PC_EGL_CFLAGS_OTHER}")
+    message(STATUS "PC_EGL_INCLUDEDIR:       ${PC_EGL_INCLUDEDIR}")
+    message(STATUS "PC_EGL_INCLUDE_DIRS:     ${PC_EGL_INCLUDE_DIRS}")
+    message(STATUS "PC_EGL_LIBDIR:           ${PC_EGL_LIBDIR}")
+    message(STATUS "PC_EGL_LIBRARY_DIRS:     ${PC_EGL_LIBRARY_DIRS}")
+    message(STATUS "PC_EGL_LDFLAGS:          ${PC_EGL_LDFLAGS}")
+    message(STATUS "PC_EGL_LDFLAGS_OTHER:    ${PC_EGL_LDFLAGS_OTHER}")
+
     set(EGL_DEFINITIONS ${PC_EGL_CFLAGS_OTHER})
 endif ()
 
