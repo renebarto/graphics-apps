@@ -1,9 +1,29 @@
 cmake_minimum_required(VERSION 3.5)
-project(hello-wayland)
+project(graphics-apps)
 
 set(CMAKE_MODULE_PATH
     ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake CACHE STRING
     "CMake module path." FORCE)
+
+option(RPI_PLATFORM "Build for RPI" OFF)
+option(SYNAPTICS_PLATFORM "Build for Synaptics" OFF)
+option(X86_64_PLATFORM "Build for x86_64" ON)
+
+if (RPI_PLATFORM)
+    message(STATUS "Selecting RPI platform")
+    set(CMAKE_FRAMEWORK_PATH /opt/rpi/usr)
+#    set(CMAKE_TOOLCHAIN_FILE /home/rene/armv8-linux-gnueabihf.cmake)
+elseif (SYNAPTICS_PLATFORM)
+    message(STATUS "Selecting Synaptics platform")
+    set(CMAKE_FRAMEWORK_PATH /opt/synaptics/usr)
+#    set(CMAKE_TOOLCHAIN_FILE /home/rene/armv8-linux-gnueabihf.cmake)
+elseif (X86_64_PLATFORM)
+    message(STATUS "Selecting Desktop x86_64 platform")
+    set(CMAKE_FRAMEWORK_PATH /usr)
+#    set(CMAKE_TOOLCHAIN_FILE /home/rene/x86_64-linux-gnu.cmake)
+else()
+    message(ERROR "Undefined platform")
+endif()
 
 include_directories(${CMAKE_SOURCE_DIR})
 
@@ -58,9 +78,12 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_SYSROOT}/usr CACHE PATH "Install directory" FOR
 message(STATUS "Staging directory:            " ${CMAKE_INSTALL_PREFIX})
 message(STATUS "System root directory:        " ${CMAKE_SYSROOT})
 message(STATUS "Install directory:            " ${CMAKE_SYSROOT}/usr)
+message(STATUS "System name:                  " ${CMAKE_SYSTEM_NAME})
+message(STATUS "System processor:             " ${CMAKE_SYSTEM_PROCESSOR})
+message(STATUS "C compiler:                   " ${CMAKE_C_COMPILER})
+message(STATUS "C++ compiler:                 " ${CMAKE_CXX_COMPILER})
+message(STATUS "Cross-compiling:              " ${CMAKE_CROSSCOMPILING})
 
-#add_subdirectory(hello-wayland)
-#add_subdirectory(weston-simple-egl)
-add_subdirectory(drm-info)
-add_subdirectory(gbm-info)
-add_subdirectory(simple-egl)
+add_subdirectory(egl-test)
+add_subdirectory(westeros-test)
+add_subdirectory(westeros)

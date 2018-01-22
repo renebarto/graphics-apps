@@ -10,7 +10,8 @@ function(show_target_properties target)
     MESSAGE(STATUS "CMAKE_CXX_FLAGS_RELWITHDEBINFO:     " ${CMAKE_CXX_FLAGS_RELWITHDEBINFO} )
 
     get_target_property(INCLUDES ${target} INCLUDE_DIRECTORIES)
-    message(STATUS "Includes:                           " ${INCLUDES})
+    list_to_string(INCLUDES STR)
+    message(STATUS "Includes:                           " ${STR})
 
     get_target_property(DEFINES ${target} COMPILE_DEFINITIONS)
     list_to_string(DEFINES STR)

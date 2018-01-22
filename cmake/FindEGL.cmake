@@ -36,32 +36,35 @@ pkg_check_modules(PC_EGL egl)
 
 if (PC_EGL_FOUND)
     message(STATUS "Found egl.pc")
-    message(STATUS "PC_EGL_CFLAGS:           ${PC_EGL_CFLAGS}")
-    message(STATUS "PC_EGL_CFLAGS_OTHER:     ${PC_EGL_CFLAGS_OTHER}")
-    message(STATUS "PC_EGL_INCLUDEDIR:       ${PC_EGL_INCLUDEDIR}")
-    message(STATUS "PC_EGL_INCLUDE_DIRS:     ${PC_EGL_INCLUDE_DIRS}")
-    message(STATUS "PC_EGL_LIBDIR:           ${PC_EGL_LIBDIR}")
-    message(STATUS "PC_EGL_LIBRARY_DIRS:     ${PC_EGL_LIBRARY_DIRS}")
-    message(STATUS "PC_EGL_LDFLAGS:          ${PC_EGL_LDFLAGS}")
-    message(STATUS "PC_EGL_LDFLAGS_OTHER:    ${PC_EGL_LDFLAGS_OTHER}")
+    message(STATUS "PC_EGL_CFLAGS:                ${PC_EGL_CFLAGS}")
+    message(STATUS "PC_EGL_CFLAGS_OTHER:          ${PC_EGL_CFLAGS_OTHER}")
+    message(STATUS "PC_EGL_INCLUDEDIR:            ${PC_EGL_INCLUDEDIR}")
+    message(STATUS "PC_EGL_INCLUDE_DIRS:          ${PC_EGL_INCLUDE_DIRS}")
+    message(STATUS "PC_EGL_LIBDIR:                ${PC_EGL_LIBDIR}")
+    message(STATUS "PC_EGL_LIBRARY_DIRS:          ${PC_EGL_LIBRARY_DIRS}")
+    message(STATUS "PC_EGL_LDFLAGS:               ${PC_EGL_LDFLAGS}")
+    message(STATUS "PC_EGL_LDFLAGS_OTHER:         ${PC_EGL_LDFLAGS_OTHER}")
 
     set(EGL_DEFINITIONS ${PC_EGL_CFLAGS_OTHER})
 endif ()
 
 find_path(EGL_INCLUDE_DIRECTORY NAMES EGL/egl.h
-        HINTS ${PC_EGL_INCLUDEDIR} ${PC_EGL_INCLUDE_DIRS}
+        HINTS ${CMAKE_FRAMEWORK_PATH}/include ${PC_EGL_INCLUDEDIR} ${PC_EGL_INCLUDE_DIRS}
         )
 
 set(EGL_NAMES ${EGL_NAMES} egl EGL)
 find_library(EGL_LIBRARIES NAMES ${EGL_NAMES}
-        HINTS ${PC_EGL_LIBDIR} ${PC_EGL_LIBRARY_DIRS}
+        HINTS ${CMAKE_FRAMEWORK_PATH}/lib ${PC_EGL_LIBDIR} ${PC_EGL_LIBRARY_DIRS}
         )
+
+message(STATUS "EGL_INCLUDE_DIRECTORY:        ${EGL_INCLUDE_DIRECTORY}")
+message(STATUS "EGL_LIBRARIES:                ${EGL_LIBRARIES}")
 
 if (NOT ${EGL_INCLUDE_DIRECTORY} STREQUAL "" AND
     NOT ${EGL_LIBRARIES} STREQUAL "")
     message(STATUS "Found EGL")
 else()
-    message(SEND_ERROR "Could not find EGL. Please install: sudo apt-get install libegl1-mesa-dev")
+    message(SEND_ERROR "Could not find EGL.")
 endif()
 
 include(FindPackageHandleStandardArgs)

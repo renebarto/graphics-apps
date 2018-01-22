@@ -1,4 +1,13 @@
 cmake-build-debug/
 output/
 .idea/
+westeros/protocol/version5/xdg-shell-client-protocol.h
+westeros/protocol/version5/xdg-shell-protocol.c
+westeros/protocol/version5/xdg-shell-server-protocol.h
+westeros/simplebuffer/protocol/simplebuffer-client-protocol.h
+westeros/simplebuffer/protocol/simplebuffer-protocol.c
+westeros/simplebuffer/protocol/simplebuffer-server-protocol.h
+westeros/simpleshell/protocol/simpleshell-client-protocol.h
+westeros/simpleshell/protocol/simpleshell-protocol.c
+westeros/simpleshell/protocol/simpleshell-server-protocol.h
 

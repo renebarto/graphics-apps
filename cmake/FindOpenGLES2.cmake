@@ -16,75 +16,44 @@
 # Win32, Apple, and Android are not tested!
 # Linux tested and works
 
-if(WIN32)
-    if(CYGWIN)
-        find_path(OPENGLES2_INCLUDE_DIR GLES2/gl2.h)
-        find_library(OPENGLES2_LIBRARY libGLESv2)
-    endif()
-elseif(APPLE)
-    create_search_paths(/Developer/Platforms)
-    findpkg_framework(OpenGLES2)
-    set(OPENGLES2_LIBRARY "-framework OpenGLES")
-else()
-    find_path(OPENGLES2_INCLUDE_DIR GLES2/gl2.h
-            PATHS /usr/openwin/share/include
-            /opt/graphics/OpenGL/include
-            /opt/vc/include
-            /usr/X11R6/include
-            /usr/include
-            )
+find_package(PkgConfig)
 
-    find_library(OPENGLES2_LIBRARY
-            NAMES GLESv2
-            PATHS /opt/graphics/OpenGL/lib
-            /usr/openwin/lib
-            /usr/shlib /usr/X11R6/lib
-            /opt/vc/lib
-            /usr/lib/aarch64-linux-gnu
-            /usr/lib/arm-linux-gnueabihf
-            /usr/lib
-            )
+pkg_check_modules(PC_OPENGLES2 glesv2)
 
-    find_library(OPENGLES1_gl_LIBRARY
-            NAMES GLESv1_CM
-            PATHS /opt/graphics/OpenGL/lib
-            /usr/openwin/lib
-            /usr/shlib /usr/X11R6/lib
-            /opt/vc/lib
-            /usr/lib/aarch64-linux-gnu
-            /usr/lib/arm-linux-gnueabihf
-            /usr/lib
-            )
-endif()
+if (PC_OPENGLES2_FOUND)
+    message(STATUS "Found glesv2.pc")
+    message(STATUS "PC_OPENGLES2_CFLAGS:          ${PC_OPENGLES2_CFLAGS}")
+    message(STATUS "PC_OPENGLES2_CFLAGS_OTHER:    ${PC_OPENGLES2_CFLAGS_OTHER}")
+    message(STATUS "PC_OPENGLES2_INCLUDEDIR:      ${PC_OPENGLES2_INCLUDEDIR}")
+    message(STATUS "PC_OPENGLES2_INCLUDE_DIRS:    ${PC_OPENGLES2_INCLUDE_DIRS}")
+    message(STATUS "PC_OPENGLES2_LIBDIR:          ${PC_OPENGLES2_LIBDIR}")
+    message(STATUS "PC_OPENGLES2_LIBRARY_DIRS:    ${PC_OPENGLES2_LIBRARY_DIRS}")
+    message(STATUS "PC_OPENGLES2_LDFLAGS:         ${PC_OPENGLES2_LDFLAGS}")
+    message(STATUS "PC_OPENGLES2_LDFLAGS_OTHER:   ${PC_OPENGLES2_LDFLAGS_OTHER}")
 
-message(STATUS "Found GLES")
-message(STATUS "OPENGLES2_INCLUDE_DIR:   ${OPENGLES2_INCLUDE_DIR}")
-message(STATUS "OPENGLES2_LIBRARY:       ${OPENGLES2_LIBRARY}")
-message(STATUS "OPENGLES1_gl_LIBRARY:    ${OPENGLES1_gl_LIBRARY}")
+    set(OPENGLES2_DEFINITIONS ${PC_OPENGLES2_CFLAGS_OTHER})
+endif ()
 
-set(OPENGLES2_LIBRARIES ${OPENGLES2_LIBRARIES} ${OPENGLES2_LIBRARY})
-if (OPENGLES1_gl_LIBRARY)
-    list(APPEND OPENGLES2_LIBRARIES ${OPENGLES1_gl_LIBRARY})
-endif()
-
-if(BUILD_ANDROID)
-    if(OPENGLES2_LIBRARY)
-        set(OPENGLES2_FOUND TRUE)
-    endif()
-else()
-    if(OPENGLES2_LIBRARY)
-        set(OPENGLES2_LIBRARIES ${OPENGLES2_LIBRARIES})
-        set(OPENGLES2_FOUND TRUE)
-    endif()
-endif()
-
-mark_as_advanced(
-    OPENGLES2_INCLUDE_DIR
-    OPENGLES2_LIBRARY
-    OPENGLES1_gl_LIBRARY
+find_path(OPENGLES2_INCLUDE_DIRECTORY NAMES GLES2/gl2.h
+    HINTS ${CMAKE_FRAMEWORK_PATH}/include ${PC_OPENGLES2_INCLUDEDIR} ${PC_OPENGLES2_INCLUDE_DIRS}
     )
-if(OPENGLES2_FOUND)
-    message(STATUS "Found system OpenGL ES 2 library: ${OPENGLES2_LIBRARIES}")
+
+set(OPENGLES2_NAMES GLESv2)
+find_library(OPENGLES2_LIBRARIES NAMES ${OPENGLES2_NAMES}
+    HINTS ${CMAKE_FRAMEWORK_PATH}/lib ${PC_OPENGLES2_LIBDIR} ${PC_OPENGLES2_LIBRARY_DIRS}
+    )
+
+message(STATUS "OPENGLES2_INCLUDE_DIRECTORY:  ${OPENGLES2_INCLUDE_DIRECTORY}")
+message(STATUS "OPENGLES2_LIBRARIES:          ${OPENGLES2_LIBRARIES}")
+
+if (NOT ${OPENGLES2_INCLUDE_DIRECTORY} STREQUAL "" AND
+    NOT ${OPENGLES2_LIBRARIES} STREQUAL "")
+    message(STATUS "Found GLESv2")
 else()
-    set(OPENGLES2_LIBRARIES "")
+    message(SEND_ERROR "Could not find GLESv2.")
 endif()
+
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(EGL DEFAULT_MSG OPENGLES2_INCLUDE_DIRECTORY OPENGLES2_LIBRARIES)
+
+mark_as_advanced(OPENGLES2_INCLUDE_DIRECTORY OPENGLES2_LIBRARIES)
